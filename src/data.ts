@@ -291,6 +291,13 @@ export const siteContent: SiteContent = {
     },
     items: [
       {
+        date: 'Apr 27, 2026',
+        title: 'TopoClaw development',
+        body:
+          'Participated in the development of TopoClaw, an all-scenario AI digital assistant for cross-device execution, social collaboration, and proactive assistance.',
+        href: 'https://github.com/MadeAgents/TopoClaw',
+      },
+      {
         date: 'Sep 18, 2025',
         title: 'MobileUse accepted at NeurIPS 2025',
         body: 'Our work on hierarchical reflection-driven GUI agents was accepted at NeurIPS 2025.',
@@ -305,7 +312,7 @@ export const siteContent: SiteContent = {
     ],
   },
   footer: [
-    { icon: 'bookOpen', text: 'Last updated: April 26, 2026' },
+    { icon: 'bookOpen', text: 'Last updated: April 27, 2026' },
     { icon: 'mapPin', text: 'Shenzhen · Chongqing · Research in motion' },
   ],
 };
