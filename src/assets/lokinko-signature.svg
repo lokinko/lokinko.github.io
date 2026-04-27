@@ -1,0 +1,19 @@
+<svg width="132" height="52" viewBox="0 0 132 52" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="lokinko">
+  <defs>
+    <linearGradient id="ink" x1="0" y1="8" x2="126" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#183D62"/>
+      <stop offset="0.62" stop-color="#2E6F9F"/>
+      <stop offset="1" stop-color="#9B7B2F"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="4"
+    y="36"
+    fill="url(#ink)"
+    font-family="Trebuchet MS, Avenir Next, Segoe UI, sans-serif"
+    font-size="32"
+    font-style="italic"
+    font-weight="850"
+    letter-spacing="0"
+  >lokinko</text>
+</svg>

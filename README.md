@@ -9,6 +9,10 @@ npm install
 npm run dev
 ```
 
+## Content
+
+Front-end copy, navigation, profile details, publications, activities, links, footer text, and page metadata are centralized in `src/data.ts` under `siteContent`.
+
 ## Build
 
 ```bash

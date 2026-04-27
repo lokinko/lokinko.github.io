@@ -1,27 +1,136 @@
+import { useEffect, useState } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUpRight,
   BookOpen,
   Code2,
+  GraduationCap,
   Mail,
   MapPin,
   Newspaper,
   Sparkles,
 } from 'lucide-react';
-import { activities, interests, links, publications, type Publication } from './data';
+import {
+  siteContent,
+  type ContentLink,
+  type IconName,
+  type Publication,
+  type SectionHeaderContent,
+} from './data';
 
-function SectionHeader({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description?: string;
-}) {
+const icons: Record<IconName, LucideIcon> = {
+  bookOpen: BookOpen,
+  code: Code2,
+  graduationCap: GraduationCap,
+  mail: Mail,
+  mapPin: MapPin,
+  newspaper: Newspaper,
+  sparkles: Sparkles,
+};
+
+type ScholarCitationData = {
+  citations?: number;
+};
+
+function linkAttributes(link: ContentLink) {
+  return {
+    target: link.external ? '_blank' : undefined,
+    rel: link.external ? 'noreferrer' : undefined,
+  };
+}
+
+function ContentIcon({ name, className }: { name?: IconName; className?: string }) {
+  if (!name) {
+    return null;
+  }
+
+  const Icon = icons[name];
+
+  return <Icon className={className} aria-hidden="true" />;
+}
+
+function formatCount(value: number) {
+  return new Intl.NumberFormat('en-US').format(value);
+}
+
+function metricUrl(dataUrl: string) {
+  if (dataUrl.startsWith('http')) {
+    return dataUrl;
+  }
+
+  if (dataUrl.startsWith('/')) {
+    return dataUrl;
+  }
+
+  return `${import.meta.env.BASE_URL}${dataUrl}`;
+}
+
+function useCitationCount(link: ContentLink) {
+  const metric = link.metric;
+  const [count, setCount] = useState<number | null>(metric?.fallbackCount ?? null);
+
+  useEffect(() => {
+    if (!metric) {
+      return undefined;
+    }
+
+    const metricConfig = metric;
+    const controller = new AbortController();
+
+    async function loadMetric() {
+      try {
+        const response = await fetch(metricUrl(metricConfig.dataUrl), {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Scholar metric request failed: ${response.status}`);
+        }
+
+        const data = (await response.json()) as ScholarCitationData;
+
+        if (typeof data.citations === 'number') {
+          setCount(data.citations);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setCount(metricConfig.fallbackCount);
+        }
+      }
+    }
+
+    void loadMetric();
+
+    return () => controller.abort();
+  }, [metric]);
+
+  return count;
+}
+
+function HeroAction({ link }: { link: ContentLink }) {
+  const citationCount = useCitationCount(link);
+  const metricText = link.metric && citationCount !== null ? `${formatCount(citationCount)} ${link.metric.label}` : '';
+
+  return (
+    <a
+      className={link.metric ? 'hero-action-with-metric' : undefined}
+      href={link.href}
+      aria-label={metricText ? `${link.label}, ${metricText}` : undefined}
+      {...linkAttributes(link)}
+    >
+      <ContentIcon name={link.icon} />
+      <span>{link.label}</span>
+      {link.metric ? <span className="action-metric">{metricText || link.metric.label}</span> : null}
+    </a>
+  );
+}
+
+function SectionHeader({ eyebrow, title, description }: SectionHeaderContent) {
   return (
     <div className="section-header">
       <span>{eyebrow}</span>
-      <h2>{title}</h2>
+      {title ? <h2>{title}</h2> : null}
       {description ? <p>{description}</p> : null}
     </div>
   );
@@ -61,101 +170,100 @@ function PublicationItem({ publication, index }: { publication: Publication; ind
 }
 
 function App() {
+  const interestTitleId = `${siteContent.research.id}-interests`;
+
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Xiangmou Qu home">
-          XQ
+        <a
+          className="brand"
+          href={siteContent.header.brand.href}
+          aria-label={siteContent.header.brand.ariaLabel}
+        >
+          {siteContent.header.brand.label}
         </a>
-        <nav aria-label="Primary navigation">
-          <a href="#research">Research</a>
-          <a href="#publications">Publications</a>
-          <a href="#activities">Activities</a>
-          <a href="mailto:lokinko.cs@gmail.com">Contact</a>
+        <nav aria-label={siteContent.header.navigationAriaLabel}>
+          {siteContent.header.navigation.map((link) => (
+            <a key={link.label} href={link.href} {...linkAttributes(link)}>
+              {link.label}
+            </a>
+          ))}
         </nav>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">Machine Learning Algorithm Engineer</p>
-          <h1>Xiangmou Qu</h1>
-          <p className="hero-lede">
-            Building practical intelligent systems for mobile GUI agents, collaborative agent frameworks,
-            federated learning, and edge-cloud collaborative computing.
-          </p>
-          <div className="hero-actions" aria-label="Profile links">
-            {links.map((link) => (
-              <a key={link.label} href={link.href} target={link.href.startsWith('mailto:') ? undefined : '_blank'} rel="noreferrer">
-                {link.label === 'GitHub' ? <Code2 aria-hidden="true" /> : null}
-                {link.label === 'Email' ? <Mail aria-hidden="true" /> : null}
-                {link.label === 'Zhihu' ? <Newspaper aria-hidden="true" /> : null}
-                <span>{link.label}</span>
-              </a>
-            ))}
+      <section className="hero" id={siteContent.hero.id}>
+        <div className="hero-main">
+          <div className="hero-copy">
+            <p className="eyebrow">{siteContent.hero.eyebrow}</p>
+            <h1>{siteContent.hero.title}</h1>
+            <p className="hero-lede">{siteContent.hero.lede}</p>
+            <div className="hero-actions" aria-label={siteContent.hero.actionsAriaLabel}>
+              {siteContent.hero.actions.map((link) => (
+                <HeroAction key={link.label} link={link} />
+              ))}
+            </div>
           </div>
+
+          <aside className="profile-panel" aria-label={siteContent.profile.ariaLabel}>
+            <div className="profile-identity">
+              <div className="avatar-frame" aria-hidden="true">
+                <img src={siteContent.profile.avatar.src} alt={siteContent.profile.avatar.alt} loading="eager" />
+                <span>{siteContent.profile.avatar.fallback}</span>
+              </div>
+              <div className="profile-signature" aria-label={siteContent.profile.signature.ariaLabel}>
+                {siteContent.profile.signature.label}
+              </div>
+            </div>
+            <div>
+              <p className="profile-name">{siteContent.profile.organization}</p>
+              <p>{siteContent.profile.location}</p>
+            </div>
+            <dl>
+              {siteContent.profile.facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt>{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </aside>
         </div>
 
-        <aside className="profile-panel" aria-label="Profile summary">
-          <img src="https://github.com/lokinko.png" alt="Xiangmou Qu GitHub avatar" />
-          <div>
-            <p className="profile-name">OPPO Research Institute</p>
-            <p>Shenzhen, China</p>
-          </div>
-          <dl>
-            <div>
-              <dt>Focus</dt>
-              <dd>GUI Agents, Federated Learning</dd>
-            </div>
-            <div>
-              <dt>Education</dt>
-              <dd>Chongqing University, M.S.</dd>
-            </div>
-          </dl>
-        </aside>
-      </section>
-
-      <section className="intro-grid" id="research">
-        <article className="about-panel">
-          <SectionHeader
-            eyebrow="About"
-            title="Applied AI research with systems taste."
-            description="I work on agentic mobile operation, collaborative intelligence, and efficient learning systems that move from papers into usable infrastructure."
-          />
-          <p>
-            I am a Machine Learning Algorithm Engineer at OPPO Research Institute in Shenzhen. I received my
-            master&apos;s degree from the College of Big Data and Software Engineering at Chongqing University.
-          </p>
-        </article>
-
-        <article className="interest-panel">
-          <div className="panel-title">
-            <Sparkles aria-hidden="true" />
-            <h2>Interests</h2>
-          </div>
-          <div className="interest-list">
-            {interests.map((interest) => (
-              <span key={interest}>{interest}</span>
+        <article className="intro-panel" id={siteContent.research.id}>
+          <div className="intro-copy">
+            <SectionHeader {...siteContent.research.header} />
+            {siteContent.research.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+
+          <aside className="interest-cluster" aria-labelledby={interestTitleId}>
+            <div className="panel-title">
+              <ContentIcon name={siteContent.research.interests.icon} />
+              <h2 id={interestTitleId}>{siteContent.research.interests.title}</h2>
+            </div>
+            <div className="interest-list">
+              {siteContent.research.interests.items.map((interest) => (
+                <span key={interest}>{interest}</span>
+              ))}
+            </div>
+          </aside>
         </article>
       </section>
 
-      <section className="publication-section" id="publications">
-        <SectionHeader
-          eyebrow="Selected Publications"
-          title="Recent work across agents, federated learning, and distributed systems."
-        />
+      <section className="publication-section" id={siteContent.publications.id}>
+        <SectionHeader {...siteContent.publications.header} />
         <div className="publication-list">
-          {publications.map((publication, index) => (
+          {siteContent.publications.items.map((publication, index) => (
             <PublicationItem key={publication.title} publication={publication} index={index} />
           ))}
         </div>
       </section>
 
-      <section className="activity-section" id="activities">
-        <SectionHeader eyebrow="Recent Activities" title="Updates" />
+      <section className="activity-section" id={siteContent.activities.id}>
+        <SectionHeader {...siteContent.activities.header} />
         <div className="activity-list">
-          {activities.map((activity) => (
+          {siteContent.activities.items.map((activity) => (
             <article className="activity-item" key={activity.title}>
               <time>{activity.date}</time>
               <div>
@@ -177,14 +285,12 @@ function App() {
       </section>
 
       <footer>
-        <div>
-          <BookOpen aria-hidden="true" />
-          <span>Last updated: April 26, 2026</span>
-        </div>
-        <div>
-          <MapPin aria-hidden="true" />
-          <span>Shenzhen · Chongqing · Research in motion</span>
-        </div>
+        {siteContent.footer.map((item) => (
+          <div key={item.text}>
+            <ContentIcon name={item.icon} />
+            <span>{item.text}</span>
+          </div>
+        ))}
       </footer>
     </main>
   );
