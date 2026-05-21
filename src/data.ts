@@ -210,8 +210,26 @@ export const siteContent: SiteContent = {
     },
     items: [
       {
+        title: 'TopoClaw: A Human-Centric and Topology-Aware Agent Operating System',
+        venue: 'arXiv 2026',
+        date: 'May 15, 2026',
+        authors:
+          'Heyuan Huang, Yeyi Guan, Jihong Wang, Mingzhi Wang, Jiamu Zhou, Xiangmou Qu, Jiaxin Yin, Xin Liao, Xingyu Lou, Jun Wang',
+        tags: ['Human-Centric Agent', 'Agent System'],
+        href: 'https://arxiv.org/abs/2605.15556',
+      },
+      {
+        title: 'From Transfer to Collaboration: A Federated Framework for Cross-Market Sequential Recommendation',
+        venue: 'arXiv 2026',
+        date: 'Apr 13, 2026',
+        authors:
+          'Jundong Chen, Honglei Zhang, Xiangmou Qu, Haoxuan Li, Han Yu, Yidong Li',
+        tags: ['Federated Learning', 'Recommendation Systems', 'Cross-Market'],
+        href: 'https://arxiv.org/abs/2604.13573',
+      },
+      {
         title: 'ColorBench: Benchmarking Mobile Agents with Graph-Structured Framework for Complex Long-Horizon Tasks',
-        venue: 'The Web Conference(WWW) 2026, Oral',
+        venue: 'The Web Conference(WWW) 2026',
         date: 'Jan 13, 2026',
         authors:
           'Yuanyi Song, Heyuan Huang, Qiqiang Lin, Yin Zhao, Xiangmou Qu, Jun Wang, Xingyu Lou, Weiwen Liu, Zhuosheng Zhang, Jun Wang, Yong Yu, Weinan Zhang, Zhaoxiang Wang',
