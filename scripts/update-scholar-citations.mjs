@@ -1,14 +1,17 @@
 import { execFile } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
 const profileUrl = 'https://scholar.google.com/citations?user=kzBPdVgAAAAJ&hl=en';
 const outputUrl = new URL('../public/scholar.json', import.meta.url);
+const scriptPath = fileURLToPath(import.meta.url);
 const execFileAsync = promisify(execFile);
 const requestHeaders = {
   'accept-language': 'en-US,en;q=0.9',
-  'user-agent': 'Mozilla/5.0 (compatible; lokinko.github.io citation updater; +https://lokinko.github.io)',
+  'user-agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36',
 };
 const fallback = {
   citations: 104,
@@ -17,7 +20,11 @@ const fallback = {
   updatedAt: '2026-04-27T13:46:08Z',
 };
 
-function extractCitationCount(html) {
+export function getOutputPath() {
+  return fileURLToPath(outputUrl);
+}
+
+export function extractCitationCount(html) {
   const decoded = html
     .replace(/&nbsp;/g, ' ')
     .replace(/&#39;/g, "'")
@@ -38,35 +45,42 @@ function extractCitationCount(html) {
   return null;
 }
 
+export function getCurlArgs(platform = process.platform) {
+  return [
+    '--fail',
+    '--silent',
+    '--show-error',
+    '--location',
+    '--max-time',
+    '20',
+    ...(platform === 'win32' ? ['--ssl-no-revoke'] : []),
+    '--user-agent',
+    requestHeaders['user-agent'],
+    '--header',
+    `Accept-Language: ${requestHeaders['accept-language']}`,
+    profileUrl,
+  ];
+}
+
 async function readExisting() {
   try {
-    return JSON.parse(await readFile(outputUrl, 'utf8'));
+    return JSON.parse(await readFile(getOutputPath(), 'utf8'));
   } catch {
     return null;
   }
 }
 
 async function writeCitationData(data) {
-  await mkdir(dirname(outputUrl.pathname), { recursive: true });
-  await writeFile(outputUrl, `${JSON.stringify(data, null, 2)}\n`);
+  const outputPath = getOutputPath();
+
+  await mkdir(dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, `${JSON.stringify(data, null, 2)}\n`);
 }
 
 async function fetchProfileWithCurl() {
   const { stdout } = await execFileAsync(
     'curl',
-    [
-      '--fail',
-      '--silent',
-      '--show-error',
-      '--location',
-      '--max-time',
-      '20',
-      '--user-agent',
-      requestHeaders['user-agent'],
-      '--header',
-      `Accept-Language: ${requestHeaders['accept-language']}`,
-      profileUrl,
-    ],
+    getCurlArgs(),
     { maxBuffer: 5 * 1024 * 1024 },
   );
 
@@ -108,8 +122,12 @@ async function main() {
   } catch (error) {
     const data = existing ?? fallback;
     await writeCitationData(data);
+    console.error(`::error title=Google Scholar update failed::${error.message}`);
     console.warn(`Keeping existing Scholar citation data: ${error.message}`);
+    process.exitCode = 1;
   }
 }
 
-await main();
+if (process.argv[1] === scriptPath) {
+  await main();
+}
