@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { extractCitationCount, getCurlArgs, getOutputPath } from './update-scholar-citations.mjs';
+import {
+  extractCitationCount,
+  formatGithubAnnotation,
+  getCurlArgs,
+  getOutputPath,
+} from './update-scholar-citations.mjs';
 
 test('getOutputPath converts file URLs to a usable local filesystem path', () => {
   const outputPath = getOutputPath();
@@ -23,10 +28,22 @@ test('getCurlArgs disables Windows Schannel revocation checks', () => {
   assert.ok(args.includes('--ssl-no-revoke'));
 });
 
+test('getCurlArgs keeps the Scholar response body for diagnostics', () => {
+  const args = getCurlArgs('linux');
+
+  assert.equal(args.includes('--fail'), false);
+});
+
 test('getCurlArgs uses a browser-like user agent for Google Scholar', () => {
   const args = getCurlArgs('linux');
   const userAgent = args[args.indexOf('--user-agent') + 1];
 
   assert.match(userAgent, /Mozilla\/5\.0/);
   assert.match(userAgent, /Chrome\//);
+});
+
+test('formatGithubAnnotation escapes annotation control characters', () => {
+  const annotation = formatGithubAnnotation('warning', 'Scholar failed', 'line 1\nline 2%');
+
+  assert.equal(annotation, '::warning title=Scholar failed::line 1%0Aline 2%25');
 });

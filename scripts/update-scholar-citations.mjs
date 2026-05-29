@@ -47,7 +47,6 @@ export function extractCitationCount(html) {
 
 export function getCurlArgs(platform = process.platform) {
   return [
-    '--fail',
     '--silent',
     '--show-error',
     '--location',
@@ -60,6 +59,15 @@ export function getCurlArgs(platform = process.platform) {
     `Accept-Language: ${requestHeaders['accept-language']}`,
     profileUrl,
   ];
+}
+
+export function formatGithubAnnotation(level, title, message) {
+  const escapedMessage = String(message)
+    .replaceAll('%', '%25')
+    .replaceAll('\r', '%0D')
+    .replaceAll('\n', '%0A');
+
+  return `::${level} title=${title}::${escapedMessage}`;
 }
 
 async function readExisting() {
@@ -122,9 +130,8 @@ async function main() {
   } catch (error) {
     const data = existing ?? fallback;
     await writeCitationData(data);
-    console.error(`::error title=Google Scholar update failed::${error.message}`);
+    console.warn(formatGithubAnnotation('warning', 'Google Scholar update failed', error.message));
     console.warn(`Keeping existing Scholar citation data: ${error.message}`);
-    process.exitCode = 1;
   }
 }
 
