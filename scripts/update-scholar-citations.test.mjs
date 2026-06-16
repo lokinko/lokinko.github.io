@@ -58,7 +58,50 @@ test('updateScholarCitations fails when the Scholar profile cannot be fetched', 
       writeCitationData: async () => {
         throw new Error('should not write fallback data');
       },
+      maxAttempts: 1,
     }),
     /blocked by Scholar/,
+  );
+});
+
+test('updateScholarCitations retries blocked Scholar responses before writing data', async () => {
+  let attempts = 0;
+  let writtenData = null;
+
+  const citations = await updateScholarCitations({
+    fetchProfileHtml: async () => {
+      attempts += 1;
+
+      if (attempts < 3) {
+        return '<html><head><title>Sorry</title></head><body>unusual traffic</body></html>';
+      }
+
+      return '<meta name="description" content="Xiangmou Qu - Cited by 129 - Machine learning">';
+    },
+    writeCitationData: async (data) => {
+      writtenData = data;
+    },
+    now: () => new Date('2026-06-16T00:00:00Z'),
+    retryDelayMs: 0,
+    log: () => {},
+  });
+
+  assert.equal(attempts, 3);
+  assert.equal(citations, 129);
+  assert.equal(writtenData.citations, 129);
+});
+
+test('updateScholarCitations reports response diagnostics when parsing keeps failing', async () => {
+  await assert.rejects(
+    updateScholarCitations({
+      fetchProfileHtml: async () =>
+        '<html><head><title>Sorry</title></head><body>Our systems have detected unusual traffic from your computer network.</body></html>',
+      writeCitationData: async () => {
+        throw new Error('should not write fallback data');
+      },
+      maxAttempts: 1,
+      retryDelayMs: 0,
+    }),
+    /title="Sorry".*unusual traffic/s,
   );
 });

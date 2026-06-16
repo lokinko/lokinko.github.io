@@ -13,6 +13,8 @@ const requestHeaders = {
   'user-agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36',
 };
+const defaultMaxAttempts = 3;
+const defaultRetryDelayMs = 5000;
 
 export function getOutputPath() {
   return fileURLToPath(outputUrl);
@@ -64,6 +66,35 @@ export function formatGithubAnnotation(level, title, message) {
   return `::${level} title=${title}::${escapedMessage}`;
 }
 
+function stripHtml(html) {
+  return html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function describeScholarResponse(html) {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, ' ').trim();
+  const bodyPreview = stripHtml(html).slice(0, 240);
+
+  return [
+    title ? `title="${title}"` : 'title unavailable',
+    bodyPreview ? `preview="${bodyPreview}"` : 'preview unavailable',
+  ].join('; ');
+}
+
+function sleep(ms) {
+  if (ms <= 0) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function writeCitationData(data) {
   const outputPath = getOutputPath();
 
@@ -100,21 +131,42 @@ export async function updateScholarCitations({
   fetchProfileHtml: fetchHtml = fetchProfileHtml,
   writeCitationData: writeData = writeCitationData,
   now = () => new Date(),
+  maxAttempts = defaultMaxAttempts,
+  retryDelayMs = defaultRetryDelayMs,
+  log = console.warn,
 } = {}) {
-  const citations = extractCitationCount(await fetchHtml());
+  let lastError = null;
 
-  if (typeof citations !== 'number' || Number.isNaN(citations)) {
-    throw new Error('Could not find a citation count in the Scholar profile');
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const html = await fetchHtml();
+      const citations = extractCitationCount(html);
+
+      if (typeof citations === 'number' && !Number.isNaN(citations)) {
+        await writeData({
+          citations,
+          source: 'Google Scholar',
+          profileUrl,
+          updatedAt: now().toISOString(),
+        });
+
+        return citations;
+      }
+
+      lastError = new Error(
+        `Could not find a citation count in the Scholar profile (${describeScholarResponse(html)})`,
+      );
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt < maxAttempts) {
+      log(`Google Scholar update attempt ${attempt}/${maxAttempts} failed: ${lastError.message}`);
+      await sleep(retryDelayMs);
+    }
   }
 
-  await writeData({
-    citations,
-    source: 'Google Scholar',
-    profileUrl,
-    updatedAt: now().toISOString(),
-  });
-
-  return citations;
+  throw lastError;
 }
 
 async function main() {
