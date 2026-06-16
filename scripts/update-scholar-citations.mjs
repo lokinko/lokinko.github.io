@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -12,12 +12,6 @@ const requestHeaders = {
   'accept-language': 'en-US,en;q=0.9',
   'user-agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36',
-};
-const fallback = {
-  citations: 104,
-  source: 'Google Scholar',
-  profileUrl,
-  updatedAt: '2026-04-27T13:46:08Z',
 };
 
 export function getOutputPath() {
@@ -70,14 +64,6 @@ export function formatGithubAnnotation(level, title, message) {
   return `::${level} title=${title}::${escapedMessage}`;
 }
 
-async function readExisting() {
-  try {
-    return JSON.parse(await readFile(getOutputPath(), 'utf8'));
-  } catch {
-    return null;
-  }
-}
-
 async function writeCitationData(data) {
   const outputPath = getOutputPath();
 
@@ -110,28 +96,35 @@ async function fetchProfileHtml() {
   }
 }
 
+export async function updateScholarCitations({
+  fetchProfileHtml: fetchHtml = fetchProfileHtml,
+  writeCitationData: writeData = writeCitationData,
+  now = () => new Date(),
+} = {}) {
+  const citations = extractCitationCount(await fetchHtml());
+
+  if (typeof citations !== 'number' || Number.isNaN(citations)) {
+    throw new Error('Could not find a citation count in the Scholar profile');
+  }
+
+  await writeData({
+    citations,
+    source: 'Google Scholar',
+    profileUrl,
+    updatedAt: now().toISOString(),
+  });
+
+  return citations;
+}
+
 async function main() {
-  const existing = await readExisting();
-
   try {
-    const citations = extractCitationCount(await fetchProfileHtml());
-
-    if (typeof citations !== 'number' || Number.isNaN(citations)) {
-      throw new Error('Could not find a citation count in the Scholar profile');
-    }
-
-    await writeCitationData({
-      citations,
-      source: 'Google Scholar',
-      profileUrl,
-      updatedAt: new Date().toISOString(),
-    });
+    const citations = await updateScholarCitations();
     console.log(`Updated Google Scholar citations: ${citations}`);
   } catch (error) {
-    const data = existing ?? fallback;
-    await writeCitationData(data);
-    console.warn(formatGithubAnnotation('warning', 'Google Scholar update failed', error.message));
-    console.warn(`Keeping existing Scholar citation data: ${error.message}`);
+    console.error(formatGithubAnnotation('error', 'Google Scholar update failed', error.message));
+    console.error(`Google Scholar update failed: ${error.message}`);
+    process.exitCode = 1;
   }
 }
 

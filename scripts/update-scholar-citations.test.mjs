@@ -6,6 +6,7 @@ import {
   formatGithubAnnotation,
   getCurlArgs,
   getOutputPath,
+  updateScholarCitations,
 } from './update-scholar-citations.mjs';
 
 test('getOutputPath converts file URLs to a usable local filesystem path', () => {
@@ -46,4 +47,18 @@ test('formatGithubAnnotation escapes annotation control characters', () => {
   const annotation = formatGithubAnnotation('warning', 'Scholar failed', 'line 1\nline 2%');
 
   assert.equal(annotation, '::warning title=Scholar failed::line 1%0Aline 2%25');
+});
+
+test('updateScholarCitations fails when the Scholar profile cannot be fetched', async () => {
+  await assert.rejects(
+    updateScholarCitations({
+      fetchProfileHtml: async () => {
+        throw new Error('blocked by Scholar');
+      },
+      writeCitationData: async () => {
+        throw new Error('should not write fallback data');
+      },
+    }),
+    /blocked by Scholar/,
+  );
 });
