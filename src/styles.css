@@ -216,24 +216,6 @@ nav a:focus-visible {
   height: 17px;
 }
 
-.hero-action-with-metric {
-  padding-right: 10px;
-}
-
-.action-metric {
-  display: inline-flex;
-  align-items: center;
-  min-height: 26px;
-  padding: 4px 8px;
-  color: var(--accent-dark);
-  font-size: 0.72rem;
-  font-weight: 850;
-  white-space: nowrap;
-  background: rgba(207, 231, 255, 0.72);
-  border: 1px solid rgba(46, 111, 159, 0.16);
-  border-radius: 999px;
-}
-
 .profile-panel {
   position: relative;
   display: grid;

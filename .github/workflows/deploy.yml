@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '17 2 */3 * *'
   workflow_dispatch:
 
 permissions:
@@ -31,9 +29,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Update Scholar citations
-        run: npm run update:scholar
 
       - name: Build
         run: npm run build

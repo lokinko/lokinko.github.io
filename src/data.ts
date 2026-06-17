@@ -1,24 +1,16 @@
 export type IconName =
   | 'bookOpen'
   | 'code'
-  | 'graduationCap'
   | 'mail'
   | 'mapPin'
   | 'newspaper'
   | 'sparkles';
-
-export type CitationMetric = {
-  label: string;
-  dataUrl: string;
-  fallbackCount: number;
-};
 
 export type ContentLink = {
   label: string;
   href: string;
   icon?: IconName;
   external?: boolean;
-  metric?: CitationMetric;
 };
 
 export type SectionHeaderContent = {
@@ -150,17 +142,6 @@ export const siteContent: SiteContent = {
       { label: 'GitHub', href: 'https://github.com/lokinko', icon: 'code', external: true },
       { label: 'Email', href: 'mailto:lokinko.cs@gmail.com', icon: 'mail' },
       { label: 'Zhihu', href: 'https://www.zhihu.com/people/lokinko', icon: 'newspaper', external: true },
-      {
-        label: 'Google Scholar',
-        href: 'https://scholar.google.com/citations?user=kzBPdVgAAAAJ&hl=en',
-        icon: 'graduationCap',
-        external: true,
-        metric: {
-          label: 'citations',
-          dataUrl: '/scholar.json',
-          fallbackCount: 104,
-        },
-      },
     ],
   },
   profile: {

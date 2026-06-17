@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUpRight,
   BookOpen,
   Code2,
-  GraduationCap,
   Mail,
   MapPin,
   Newspaper,
@@ -21,15 +19,10 @@ import {
 const icons: Record<IconName, LucideIcon> = {
   bookOpen: BookOpen,
   code: Code2,
-  graduationCap: GraduationCap,
   mail: Mail,
   mapPin: MapPin,
   newspaper: Newspaper,
   sparkles: Sparkles,
-};
-
-type ScholarCitationData = {
-  citations?: number;
 };
 
 function linkAttributes(link: ContentLink) {
@@ -49,79 +42,14 @@ function ContentIcon({ name, className }: { name?: IconName; className?: string 
   return <Icon className={className} aria-hidden="true" />;
 }
 
-function formatCount(value: number) {
-  return new Intl.NumberFormat('en-US').format(value);
-}
-
-function metricUrl(dataUrl: string) {
-  if (dataUrl.startsWith('http')) {
-    return dataUrl;
-  }
-
-  if (dataUrl.startsWith('/')) {
-    return dataUrl;
-  }
-
-  return `${import.meta.env.BASE_URL}${dataUrl}`;
-}
-
-function useCitationCount(link: ContentLink) {
-  const metric = link.metric;
-  const [count, setCount] = useState<number | null>(metric?.fallbackCount ?? null);
-
-  useEffect(() => {
-    if (!metric) {
-      return undefined;
-    }
-
-    const metricConfig = metric;
-    const controller = new AbortController();
-
-    async function loadMetric() {
-      try {
-        const response = await fetch(metricUrl(metricConfig.dataUrl), {
-          cache: 'no-store',
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Scholar metric request failed: ${response.status}`);
-        }
-
-        const data = (await response.json()) as ScholarCitationData;
-
-        if (typeof data.citations === 'number') {
-          setCount(data.citations);
-        }
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setCount(metricConfig.fallbackCount);
-        }
-      }
-    }
-
-    void loadMetric();
-
-    return () => controller.abort();
-  }, [metric]);
-
-  return count;
-}
-
 function HeroAction({ link }: { link: ContentLink }) {
-  const citationCount = useCitationCount(link);
-  const metricText = link.metric && citationCount !== null ? `${formatCount(citationCount)} ${link.metric.label}` : '';
-
   return (
     <a
-      className={link.metric ? 'hero-action-with-metric' : undefined}
       href={link.href}
-      aria-label={metricText ? `${link.label}, ${metricText}` : undefined}
       {...linkAttributes(link)}
     >
       <ContentIcon name={link.icon} />
       <span>{link.label}</span>
-      {link.metric ? <span className="action-metric">{metricText || link.metric.label}</span> : null}
     </a>
   );
 }
