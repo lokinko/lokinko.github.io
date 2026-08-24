@@ -6,3 +6,5 @@ external_url: "https://github.com/MadeAgents/mobile-use"
 ---
 
 MobileUse combines planning, interaction, and hierarchical reflection to improve autonomous operation across mobile applications.
+
+[![GitHub stars](https://img.shields.io/github/stars/MadeAgents/mobile-use?style=social)](https://github.com/MadeAgents/mobile-use)

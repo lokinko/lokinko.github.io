@@ -4,7 +4,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Timeline from "../components/ui/Timeline.astro";
 import { PAGES } from "../config";
 
-// Load bio content
 const bioEntry = await getEntry("bio", "bio");
 const { Content: BioContent } = bioEntry
 	? await render(bioEntry)
@@ -34,7 +33,7 @@ const internship = bioEntry?.data.internship ?? [];
 			<section class="section border-t border-border pt-8">
 				<h2 id="experience" class="section-title">💼 Experience</h2>
 				<div class="ml-[2.5px]">
-				<Timeline compact items={internship.map(item => ({
+				<Timeline items={internship.map(item => ({
 					title: item.company,
 					subtitle: item.role,
 					period: item.period,

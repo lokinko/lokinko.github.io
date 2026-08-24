@@ -54,7 +54,7 @@ const { title, href, description, date, authors, extraInput, tags, externalUrl, 
             tags && tags.length > 0 && (
                 <div class="flex gap-2 flex-wrap mb-3">
                     {tags.map((tag) => (
-                        <Tag name={tag} size="sm" />
+                        <Tag name={tag} />
                     ))}
                 </div>
             )

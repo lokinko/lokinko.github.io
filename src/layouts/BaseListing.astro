@@ -13,30 +13,28 @@ interface Props {
 const { collection, title, subtitle } = Astro.props;
 const entries = await getCollection(collection);
 
-const sortedEntries = entries.sort((a: any, b: any) => {
-    const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
-    const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
-    return dateB - dateA;
+const getTimestamp = (entry: (typeof entries)[number]) => {
+    if (entry.collection !== "publications" || !entry.data.date) return 0;
+    return new Date(entry.data.date).getTime();
+};
+
+const sortedEntries = entries.sort((a, b) => {
+    return getTimestamp(b) - getTimestamp(a);
 });
 ---
 
 <BaseLayout title={title}>
     {(title || subtitle) && (
         <header class="page-header">
-            <div class="flex items-center justify-between gap-4">
-                {title && <h1 class="page-title">{title}</h1>}
-                <slot name="actions" />
-            </div>
+            {title && <h1 class="page-title">{title}</h1>}
             {subtitle && <p class="page-subtitle">{subtitle}</p>}
         </header>
     )}
 
     <section class="item-list">
-        {sortedEntries.map((entry: any) => {
+        {sortedEntries.map((entry) => {
             const item = getListingItem(entry);
             return <BaseItemCard {...item} href={`/${collection}/${entry.id}`} />;
         })}
     </section>
-
-    <slot />
 </BaseLayout>

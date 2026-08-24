@@ -1,18 +1,10 @@
 @import "tailwindcss";
 
-/* ===========================================
-   UNIFIED VISUAL IDENTITY SYSTEM
-   Based on DESIGN-GUIDE.md principles
-   =========================================== */
-
 @theme {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-accent: var(--accent);
-    --color-sidebar-bg: var(--sidebar-bg);
     --color-border: var(--border);
-    --color-text-muted: var(--text-muted);
-    --color-surface: var(--surface);
 }
 
 
@@ -23,7 +15,6 @@
     --text-muted: #6b7280;
     --border: #e5e7eb;
     --surface: #f9fafb;
-    --sidebar-bg: #f9fafb;
 }
 
 html {
@@ -38,13 +29,7 @@ body {
 }
 
 
-/* ===========================================
-   TYPOGRAPHY SYSTEM
-   =========================================== */
-
-/* Headings */
-h1,
-.title-xl {
+h1 {
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -52,8 +37,7 @@ h1,
     color: var(--foreground);
 }
 
-h2,
-.title-lg {
+h2 {
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -61,15 +45,13 @@ h2,
     color: var(--foreground);
 }
 
-h3,
-.title-md {
+h3 {
     font-size: 1.1rem;
     font-weight: 700;
     line-height: 1.4;
     color: var(--foreground);
 }
 
-/* Body Text */
 p,
 .body {
     font-size: 0.95rem;
@@ -92,16 +74,13 @@ p,
     opacity: 0.75;
 }
 
-/* Mono (code, tags) */
-code,
-.mono {
+code {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.85rem;
     font-weight: 500;
     line-height: 1.5;
 }
 
-/* Links */
 a,
 .link {
     color: inherit;
@@ -111,7 +90,6 @@ a,
     transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-/* Global Lists */
 ul {
     list-style-type: disc;
     margin-bottom: 1rem;
@@ -139,53 +117,10 @@ a:hover,
 }
 
 
-/* ===========================================
-   LAYOUT & SPACING
-   =========================================== */
-
 .container-narrow {
     max-width: 800px;
-    margin: 0;
 }
 
-.mb-4 {
-    margin-bottom: 1rem;
-}
-
-.mb-8 {
-    margin-bottom: 2rem;
-}
-
-.pt-8 {
-    padding-top: 2rem;
-}
-
-.pb-8 {
-    padding-bottom: 2rem;
-}
-
-.gap-1 {
-    gap: 0.5rem;
-}
-
-.gap-2 {
-    gap: 1rem;
-}
-
-.gap-3 {
-    gap: 1.5rem;
-}
-
-.gap-4 {
-    gap: 2rem;
-}
-
-
-/* ===========================================
-   COMPONENT CLASSES
-   =========================================== */
-
-/* Card (list items) */
 .card {
     display: flex;
     align-items: flex-start;
@@ -278,7 +213,6 @@ a:hover,
     background: var(--surface);
 }
 
-/* Tags/Badges */
 .tag {
     display: inline-flex;
     align-items: center;
@@ -286,17 +220,8 @@ a:hover,
     font-size: 0.8rem;
     font-weight: 700;
     line-height: 1;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
 }
 
-.tag:hover {
-    opacity: 1;
-    text-decoration: underline;
-}
-
-
-/* Social Links */
 .social-link {
     display: inline-flex;
     padding: 0.25rem;
@@ -322,11 +247,6 @@ a:hover,
 }
 
 
-/* ===========================================
-   LAYOUT SECTIONS
-   =========================================== */
-
-/* Sidebar */
 .sidebar {
     width: 280px;
     height: 100vh;
@@ -338,7 +258,6 @@ a:hover,
     gap: 1.5rem;
     flex-shrink: 0;
     background: var(--background);
-    transition: background 0.3s ease;
 }
 
 .sidebar-avatar {
@@ -370,7 +289,6 @@ a:hover,
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.25rem;
-    white-space: nowrap;
 }
 
 .sidebar-bio {
@@ -381,14 +299,12 @@ a:hover,
     padding: 0 0.5rem;
 }
 
-/* Navbar */
 .navbar {
     padding: 1rem 1.5rem;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     background: var(--background);
-    transition: background 0.3s ease;
 }
 
 @media (min-width: 1024px) {
@@ -440,7 +356,6 @@ a:hover,
     width: 100%;
 }
 
-/* Scroll arrows (mobile only, shown via JS when scrollable) */
 .nav-arrow {
     display: none;
     position: absolute;
@@ -482,14 +397,12 @@ a:hover,
     color: var(--accent);
 }
 
-/* Main Content Area */
 .main-content {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
     background: var(--background);
-    transition: background 0.3s ease;
 }
 
 .main-body {
@@ -497,20 +410,12 @@ a:hover,
     flex: 1;
 }
 
-/* Footer */
 .footer {
     padding: 1.5rem 2rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 0.85rem;
     color: var(--foreground);
 }
-
-
-/* ===========================================
-   PAGE SECTIONS
-   =========================================== */
 
 .page-header {
     margin-bottom: 2rem;
@@ -546,10 +451,6 @@ a:hover,
     margin-bottom: 1rem;
 }
 
-
-/* ===========================================
-   PROSE (Content Typography)
-   =========================================== */
 
 .prose {
     font-size: 1rem;
@@ -618,8 +519,6 @@ a:hover,
     overflow-wrap: break-word;
 }
 
-/* Homepage lists share the internship timeline's dot geometry so both stay
-   aligned regardless of browser font metrics. */
 .prose.home-prose ul {
     list-style: none;
     padding-left: 16.5px;
@@ -640,16 +539,12 @@ a:hover,
     background: var(--accent);
 }
 
-/* Half the line box minus half the dot, independent of the list's font size. */
 @supports (top: 1lh) {
     .prose.home-prose ul > li::before {
         top: calc(0.5lh - 2.5px);
     }
 }
 
-/* Markdown wraps loose list items in <p>, and the global `p` rule resets those
-   to 0.95rem/1.65 whatever font size the surrounding list uses. The bullet then
-   has to follow the paragraph's line box instead of the list item's. */
 .prose.home-prose ul > li:has(> p)::before {
     top: calc(0.78375rem - 2.5px);
 }
@@ -657,6 +552,28 @@ a:hover,
 .author-line {
     line-height: 1.2;
     opacity: 0.75;
+}
+
+.tier-tags {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.22rem;
+    margin-right: 0.32rem;
+    vertical-align: baseline;
+}
+
+.tier-tag {
+    display: inline-block;
+    padding: 0 0.28rem;
+    border: 1px solid hsl(var(--tier-hue) 68% 42% / 0.28);
+    border-radius: 0.2rem;
+    background: hsl(var(--tier-hue) 72% 50% / 0.1);
+    color: hsl(var(--tier-hue) 68% 38%);
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    white-space: nowrap;
 }
 
 .scholar-metric {
@@ -843,11 +760,6 @@ a:hover,
 }
 
 
-/* ===========================================
-   SHARED COMPONENTS
-   =========================================== */
-
-/* Back Link */
 .back-link {
     font-size: 0.85rem;
     font-weight: 600;
@@ -861,16 +773,11 @@ a:hover,
     opacity: 1;
 }
 
-/* Item List */
 .item-list {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
-
-/* ===========================================
-   ACCESSIBILITY & ANIMATION
-   =========================================== */
 
 *:focus-visible {
     outline: 2px dashed var(--accent);
@@ -904,10 +811,6 @@ a:hover,
     }
 }
 
-
-/* ===========================================
-   RESPONSIVE
-   =========================================== */
 
 @media (max-width: 1024px) {
     .sidebar {
@@ -973,17 +876,6 @@ a:hover,
     .card {
         flex-direction: column;
         gap: 0.75rem;
-    }
-
-    .internship-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .internship-logo-box {
-        width: 100%;
-        flex-basis: auto;
-        justify-content: flex-start;
     }
 
     .card-image-link,

@@ -9,7 +9,6 @@ const currentPath = Astro.url.pathname;
         type="button"
         class="nav-arrow nav-arrow-left"
         aria-label="Scroll navigation left"
-        tabindex="-1"
     >
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
             <path
@@ -46,7 +45,6 @@ const currentPath = Astro.url.pathname;
         type="button"
         class="nav-arrow nav-arrow-right"
         aria-label="Scroll navigation right"
-        tabindex="-1"
     >
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
             <path
@@ -61,46 +59,33 @@ const currentPath = Astro.url.pathname;
 </nav>
 
 <script>
-    function initNavScroll() {
-        document.querySelectorAll<HTMLElement>(".navbar").forEach((navbar) => {
-            const list = navbar.querySelector<HTMLElement>(".nav-links");
-            const leftBtn = navbar.querySelector<HTMLElement>(".nav-arrow-left");
-            const rightBtn =
-                navbar.querySelector<HTMLElement>(".nav-arrow-right");
-            if (!list || !leftBtn || !rightBtn) return;
-            if ((navbar as any)._navScrollInit) return;
-            (navbar as any)._navScrollInit = true;
+    const navbar = document.querySelector<HTMLElement>(".navbar");
+    const list = navbar?.querySelector<HTMLElement>(".nav-links");
+    const leftButton = navbar?.querySelector<HTMLButtonElement>(".nav-arrow-left");
+    const rightButton = navbar?.querySelector<HTMLButtonElement>(".nav-arrow-right");
 
-            const update = () => {
-                const max = list.scrollWidth - list.clientWidth;
-                const x = list.scrollLeft;
-                navbar.classList.toggle("can-scroll-left", x > 1);
-                navbar.classList.toggle("can-scroll-right", x < max - 1);
-            };
+    if (navbar && list && leftButton && rightButton) {
+        const updateArrows = () => {
+            const maxScroll = list.scrollWidth - list.clientWidth;
+            navbar.classList.toggle("can-scroll-left", list.scrollLeft > 1);
+            navbar.classList.toggle(
+                "can-scroll-right",
+                list.scrollLeft < maxScroll - 1,
+            );
+        };
 
-            const scrollByStep = (dir: number) => {
-                list.scrollBy({
-                    left: dir * Math.max(list.clientWidth * 0.7, 120),
-                    behavior: "smooth",
-                });
-            };
+        const scrollByPage = (direction: number) => {
+            list.scrollBy({
+                left: direction * Math.max(list.clientWidth * 0.7, 120),
+                behavior: "smooth",
+            });
+        };
 
-            leftBtn.addEventListener("click", () => scrollByStep(-1));
-            rightBtn.addEventListener("click", () => scrollByStep(1));
-            list.addEventListener("scroll", update, { passive: true });
-            window.addEventListener("resize", update);
-            update();
-            // Re-check after fonts/layout settle.
-            setTimeout(update, 200);
-        });
+        leftButton.addEventListener("click", () => scrollByPage(-1));
+        rightButton.addEventListener("click", () => scrollByPage(1));
+        list.addEventListener("scroll", updateArrows, { passive: true });
+        window.addEventListener("resize", updateArrows);
+        updateArrows();
+        document.fonts.ready.then(updateArrows);
     }
-
-    initNavScroll();
-    document.addEventListener("astro:page-load", initNavScroll);
-    document.addEventListener("astro:after-swap", () => {
-        document
-            .querySelectorAll<HTMLElement>(".navbar")
-            .forEach((n) => ((n as any)._navScrollInit = false));
-        initNavScroll();
-    });
 </script>

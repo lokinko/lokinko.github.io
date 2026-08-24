@@ -4,8 +4,7 @@ import BaseLayout from "./BaseLayout.astro";
 import BackLink from "../components/ui/BackLink.astro";
 import Tag from "../components/ui/Tag.astro";
 import Icon from "../components/ui/Icon.astro";
-import { getDetailItem } from "../utils/adapters";
-import { toAssetUrl } from "../utils/assets";
+import { getListingItem, toAssetUrl } from "../utils/adapters";
 import { SITE } from "../config";
 
 interface Props {
@@ -14,20 +13,18 @@ interface Props {
 }
 
 const { collection, id } = Astro.props;
-const entry = (await getEntry(collection, id)) as any;
+const entry = await getEntry(collection, id);
 
 if (!entry) return Astro.redirect("/404");
 
 const { Content } = await render(entry);
-const detail = getDetailItem(entry, collection);
+const detail = getListingItem(entry);
 
 const meta = [];
-if (detail.date) meta.push({ label: "Date", value: detail.date, icon: "Calendar" });
-if (detail.authors) meta.push({ label: "Author", value: detail.authors, icon: "User" });
+if (detail.date) meta.push({ value: detail.date, icon: "Calendar" });
+if (detail.authors) meta.push({ value: detail.authors, icon: "User" });
 if (detail.extraInput) {
-    const icon = "Institution";
-    const label = collection === "publications" ? "Journal" : "Info";
-    meta.push({ label, value: detail.extraInput, icon });
+    meta.push({ value: detail.extraInput, icon: "Institution" });
 }
 
 const description = entry.data.description || detail.description || SITE.desc;
@@ -37,9 +34,8 @@ const ogImage = heroImage || SITE.ogImage;
 
 <BaseLayout title={detail.title} description={description} ogImage={ogImage} ogType="article">
     <div class="flex justify-between items-center mb-4">
-        <BackLink href={detail.backHref} label={collection} />
+        <BackLink href={`/${collection}`} label={collection} />
         <div class="flex items-center gap-4">
-            <slot name="actions" />
             {detail.externalUrl && (
                 <a href={detail.externalUrl} target="_blank" rel="noopener noreferrer" class="link">
                     View external
@@ -53,7 +49,7 @@ const ogImage = heroImage || SITE.ogImage;
 
         {meta.length > 0 && (
             <div class="card-meta mb-4">
-                {meta.map((m: any) => (
+                {meta.map((m) => (
                     <span class="flex items-center gap-1">
                         <Icon name={m.icon} size={14} />
                         <span>{m.value}</span>
@@ -65,7 +61,7 @@ const ogImage = heroImage || SITE.ogImage;
         {detail.tags && detail.tags.length > 0 && (
             <div class="flex gap-2 flex-wrap mb-4">
                 {detail.tags.map((tag: string) => (
-                    <Tag name={tag} size="sm" />
+                    <Tag name={tag} />
                 ))}
             </div>
         )}
@@ -81,8 +77,5 @@ const ogImage = heroImage || SITE.ogImage;
         <div class="prose">
             <Content />
         </div>
-
-        <slot name="share" />
-        <slot name="footer" />
     </article>
 </BaseLayout>

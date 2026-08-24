@@ -1,11 +1,9 @@
 ---
 interface Props {
     name: string;
-    size?: "sm" | "md" | "lg";
 }
 
-const { name, size = "md" } = Astro.props;
-const sizeClasses = { sm: "text-xs", md: "text-sm", lg: "text-base" };
+const { name } = Astro.props;
 ---
 
-<span class={`tag ${sizeClasses[size]}`}>#{name}</span>
+<span class="tag">#{name}</span>

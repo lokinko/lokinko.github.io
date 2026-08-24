@@ -1,33 +1,42 @@
-import type { ListingItem, DetailItem } from "../types";
-import { toAssetUrl } from "./assets";
+import type { CollectionEntry } from "astro:content";
 
-function formatDate(dateValue: string | Date | undefined): string | undefined {
+export interface ListingItem {
+    title: string;
+    description?: string;
+    date?: string;
+    authors?: string;
+    extraInput?: string;
+    tags: string[];
+    externalUrl?: string;
+    image?: string;
+}
+
+export function toAssetUrl(path?: string): string | undefined {
+    if (!path) return path;
+    return path.startsWith("http") || path.startsWith("/") ? path : `/${path}`;
+}
+
+function formatDate(dateValue: string | undefined): string | undefined {
     if (!dateValue) return undefined;
-    const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+    const date = new Date(dateValue);
     if (isNaN(date.getTime())) return undefined;
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "long" });
 }
 
-export function getListingItem(entry: any): ListingItem {
-    const d = entry.data;
-    
-    return {
-        title: d.title,
-        description: d.description,
-        date: formatDate(d.date),
-        authors: d.author,
-        extraInput: d.journal || d.event || d.institution,
-        tags: d.tags || [],
-        externalUrl: d.external_url,
-        image: toAssetUrl(d.image),
-    };
-}
+type ListingEntry = CollectionEntry<"publications"> | CollectionEntry<"projects">;
 
-export function getDetailItem(entry: any, collection: string): DetailItem {
-    const listing = getListingItem(entry);
-    
+export function getListingItem(entry: ListingEntry): ListingItem {
+    const data = entry.data;
+    const publication = entry.collection === "publications" ? entry.data : undefined;
+
     return {
-        ...listing,
-        backHref: `/${collection}`,
+        title: data.title,
+        description: data.description,
+        date: formatDate(publication?.date),
+        authors: publication?.author,
+        extraInput: publication?.journal,
+        tags: data.tags ?? [],
+        externalUrl: data.external_url,
+        image: toAssetUrl(data.image),
     };
 }

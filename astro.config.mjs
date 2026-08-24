@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import remarkTierTags from './src/utils/remarkTierTags.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,5 +15,9 @@ export default defineConfig({
   },
   site: 'https://lokinko.github.io',
   base: '/',
+  // Expand {{tags: ...}} tokens into deterministic, colored badges.
+  markdown: {
+    remarkPlugins: [remarkTierTags],
+  },
   integrations: [sitemap()],
 });

@@ -4,9 +4,8 @@ import BaseDetail from "../../layouts/BaseDetail.astro";
 
 export async function getStaticPaths() {
     const projects = await getCollection("projects");
-    return projects.map((project: any) => ({
+    return projects.map((project) => ({
         params: { id: project.id },
-        props: { project },
     }));
 }
 

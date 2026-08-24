@@ -1,11 +1,10 @@
 ---
-import { SITE, SOCIALS, SOCIAL_ICONS } from "../../config";
-import { getCollection } from "astro:content";
+import { SOCIALS } from "../../config";
+import { getEntry } from "astro:content";
 import Icon from "../ui/Icon.astro";
-import { toAssetUrl } from "../../utils/assets";
+import { toAssetUrl } from "../../utils/adapters";
 
-const bioCollection = await getCollection("bio");
-const bio = bioCollection[0]?.data;
+const bio = (await getEntry("bio", "bio"))?.data;
 ---
 
 <aside class="sidebar max-lg:flex-row max-lg:flex-wrap max-lg:gap-3 max-md:gap-2">
@@ -20,7 +19,7 @@ const bio = bioCollection[0]?.data;
                 loading="eager"
             />
         )}
-        <div class="flex flex-col items-center max-lg:items-start">
+        <div class="flex min-w-0 flex-col items-center max-lg:items-start">
             {bio?.name && <h1 class="sidebar-name">{bio.name}</h1>}
             {bio?.institution && (
                 <p class="sidebar-info">
@@ -41,7 +40,7 @@ const bio = bioCollection[0]?.data;
                         rel="noreferrer"
                         class="social-link"
                     >
-                        <Icon name={SOCIAL_ICONS[social.name] || social.name} size={24} />
+                        <Icon name={social.icon} size={24} />
                     </a>
                 ))}
             </div>
