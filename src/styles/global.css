@@ -1,0 +1,1025 @@
+@import "tailwindcss";
+
+/* ===========================================
+   UNIFIED VISUAL IDENTITY SYSTEM
+   Based on DESIGN-GUIDE.md principles
+   =========================================== */
+
+@theme {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-accent: var(--accent);
+    --color-sidebar-bg: var(--sidebar-bg);
+    --color-border: var(--border);
+    --color-text-muted: var(--text-muted);
+    --color-surface: var(--surface);
+}
+
+
+:root {
+    --background: #f9fafb;
+    --foreground: #111827;
+    --accent: #3b82f6;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --surface: #f9fafb;
+    --sidebar-bg: #f9fafb;
+}
+
+html {
+    font-family: "Inter", system-ui, sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ===========================================
+   TYPOGRAPHY SYSTEM
+   =========================================== */
+
+/* Headings */
+h1,
+.title-xl {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--foreground);
+}
+
+h2,
+.title-lg {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    color: var(--foreground);
+}
+
+h3,
+.title-md {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--foreground);
+}
+
+/* Body Text */
+p,
+.body {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--foreground);
+    opacity: 0.92;
+}
+
+.body-sm {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--foreground);
+    opacity: 0.85;
+}
+
+.body-xs {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--foreground);
+    opacity: 0.75;
+}
+
+/* Mono (code, tags) */
+code,
+.mono {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Links */
+a,
+.link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Global Lists */
+ul {
+    list-style-type: disc;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+
+ol {
+    list-style-type: decimal;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+
+li {
+    margin-bottom: 0;
+}
+
+ul li::marker {
+    color: var(--accent);
+}
+
+a:hover,
+.link:hover {
+    color: var(--accent);
+    opacity: 1;
+}
+
+
+/* ===========================================
+   LAYOUT & SPACING
+   =========================================== */
+
+.container-narrow {
+    max-width: 800px;
+    margin: 0;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.pt-8 {
+    padding-top: 2rem;
+}
+
+.pb-8 {
+    padding-bottom: 2rem;
+}
+
+.gap-1 {
+    gap: 0.5rem;
+}
+
+.gap-2 {
+    gap: 1rem;
+}
+
+.gap-3 {
+    gap: 1.5rem;
+}
+
+.gap-4 {
+    gap: 2rem;
+}
+
+
+/* ===========================================
+   COMPONENT CLASSES
+   =========================================== */
+
+/* Card (list items) */
+.card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1rem 0;
+}
+
+.card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-image-link {
+    flex: 0 0 180px;
+    display: block;
+    text-decoration: none;
+}
+
+.card-image {
+    width: 180px;
+    max-height: 120px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 0.25rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--foreground);
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.card-title:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.card-meta {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--foreground);
+    opacity: 0.75;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--foreground);
+    opacity: 0.8;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--foreground);
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.card-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.detail-hero-image {
+    display: block;
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    margin: 1rem 0 1.25rem;
+    background: var(--surface);
+}
+
+/* Tags/Badges */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.tag:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+
+/* Social Links */
+.social-link {
+    display: inline-flex;
+    padding: 0.25rem;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    opacity: 1;
+    color: var(--accent);
+    transform: rotate(6deg);
+}
+
+.social-link svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.5px;
+    transition: transform 0.2s ease;
+}
+
+.social-link:hover svg {
+    stroke: var(--accent);
+}
+
+
+/* ===========================================
+   LAYOUT SECTIONS
+   =========================================== */
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    padding: 4rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    background: var(--background);
+    transition: background 0.3s ease;
+}
+
+.sidebar-avatar {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    transition: border-color 0.3s ease;
+}
+
+.sidebar-avatar:hover {
+    border-color: var(--accent);
+}
+
+.sidebar-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--foreground);
+}
+
+.sidebar-info {
+    font-size: 0.75rem;
+    color: var(--foreground);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+}
+
+.sidebar-bio {
+    font-size: 0.82rem;
+    color: var(--foreground);
+    opacity: 0.8;
+    line-height: 1.5;
+    padding: 0 0.5rem;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: var(--background);
+    transition: background 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--foreground);
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.nav-link.active {
+    color: var(--accent);
+}
+
+.nav-link.inactive {
+    opacity: 0.75;
+}
+
+.nav-link-line {
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover .nav-link-line,
+.nav-link.active .nav-link-line {
+    width: 100%;
+}
+
+/* Scroll arrows (mobile only, shown via JS when scrollable) */
+.nav-arrow {
+    display: none;
+    position: absolute;
+    top: 1.09rem;
+    bottom: 1.81rem;
+    width: 2.5rem;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    color: var(--foreground);
+    z-index: 3;
+    padding: 0;
+    background: transparent;
+}
+
+.nav-arrow-left {
+    left: 0;
+    justify-content: flex-start;
+    padding-left: 0.5rem;
+    background: linear-gradient(
+        to right,
+        var(--background) 55%,
+        transparent 100%
+    );
+}
+
+.nav-arrow-right {
+    right: 0;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+    background: linear-gradient(
+        to left,
+        var(--background) 55%,
+        transparent 100%
+    );
+}
+
+.nav-arrow:hover {
+    color: var(--accent);
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    transition: background 0.3s ease;
+}
+
+.main-body {
+    padding: 1.5rem 2rem 2rem;
+    flex: 1;
+}
+
+/* Footer */
+.footer {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--foreground);
+}
+
+
+/* ===========================================
+   PAGE SECTIONS
+   =========================================== */
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--foreground);
+    opacity: 0.75;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.section {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+}
+
+
+/* ===========================================
+   PROSE (Content Typography)
+   =========================================== */
+
+.prose {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--foreground);
+}
+
+.prose h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 2rem 0 1rem;
+}
+
+.prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 1.5rem 0 0.75rem;
+}
+
+.prose h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 1.25rem 0 0.5rem;
+}
+
+.prose p {
+    margin-bottom: 1rem;
+}
+
+.prose ul,
+.prose ol {
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+
+.prose li {
+    margin-bottom: 0;
+}
+
+.prose li > p {
+    margin-bottom: 0;
+}
+
+.compact-list {
+    font-size: 0.62rem;
+    line-height: 1.28;
+}
+
+.compact-list ul,
+.compact-list ol {
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+}
+
+.compact-list li {
+    margin-bottom: 0.3rem;
+}
+
+.compact-list li p > a:first-child strong,
+.compact-list li p > strong:first-child {
+    letter-spacing: -0.03em;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* Homepage lists share the internship timeline's dot geometry so both stay
+   aligned regardless of browser font metrics. */
+.prose.home-prose ul {
+    list-style: none;
+    padding-left: 16.5px;
+}
+
+.prose.home-prose ul > li {
+    position: relative;
+}
+
+.prose.home-prose ul > li::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: calc(0.85em - 2.5px);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* Half the line box minus half the dot, independent of the list's font size. */
+@supports (top: 1lh) {
+    .prose.home-prose ul > li::before {
+        top: calc(0.5lh - 2.5px);
+    }
+}
+
+/* Markdown wraps loose list items in <p>, and the global `p` rule resets those
+   to 0.95rem/1.65 whatever font size the surrounding list uses. The bullet then
+   has to follow the paragraph's line box instead of the list item's. */
+.prose.home-prose ul > li:has(> p)::before {
+    top: calc(0.78375rem - 2.5px);
+}
+
+.author-line {
+    line-height: 1.2;
+    opacity: 0.75;
+}
+
+.scholar-metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    margin: 0 0 0.8rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+    text-decoration: none !important;
+    background: var(--surface);
+}
+
+.scholar-metric-label {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.scholar-metric strong {
+    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+}
+
+.scholar-metric:hover {
+    border-color: var(--accent);
+}
+
+.compact-list ul li::marker,
+.compact-list ol li::marker {
+    font-size: 1rem;
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.prose ul li::marker {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.prose ol li::marker {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.prose a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.prose a:hover {
+    color: var(--accent);
+}
+
+.prose code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85em;
+    font-weight: 500;
+    background: color-mix(in srgb, var(--accent) 10%, var(--background));
+    color: var(--accent);
+    padding: 0.15rem 0.3rem;
+    border-radius: 0.2rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+}
+
+.prose pre {
+    background: #111827;
+    color: #e5e7eb;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, #374151);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.65rem;
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--foreground) 8%, transparent);
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 55%, var(--border)) transparent;
+}
+
+.prose pre code {
+    background: transparent;
+    color: #e5e7eb;
+    padding: 0;
+    border: 0;
+    font-size: 0.86rem;
+    line-height: 1.65;
+    white-space: pre;
+}
+
+.prose .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.25rem 0 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    background: var(--background);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 55%, var(--border)) transparent;
+}
+
+.prose .table-container::-webkit-scrollbar,
+.prose pre::-webkit-scrollbar {
+    height: 0.65rem;
+}
+
+.prose .table-container::-webkit-scrollbar-thumb,
+.prose pre::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--accent) 55%, var(--border));
+    border-radius: 999px;
+}
+
+.prose table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--background);
+}
+
+.prose thead {
+    background: color-mix(in srgb, var(--accent) 8%, var(--background));
+}
+
+.prose th,
+.prose td {
+    min-width: 10rem;
+    max-width: 24rem;
+    padding: 0.75rem 0.85rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    text-align: left;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.prose th {
+    color: var(--foreground);
+    font-weight: 800;
+}
+
+.prose tr:last-child td {
+    border-bottom: 0;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+    border-right: 0;
+}
+
+.prose img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+    margin: 1rem 0;
+}
+
+.prose a > img {
+    display: inline;
+    margin: 0;
+    border-radius: 0;
+    vertical-align: middle;
+}
+
+.prose blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    opacity: 0.85;
+    font-style: italic;
+}
+
+.prose hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+}
+
+
+/* ===========================================
+   SHARED COMPONENTS
+   =========================================== */
+
+/* Back Link */
+.back-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--foreground);
+    opacity: 0.7;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+/* Item List */
+.item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ===========================================
+   ACCESSIBILITY & ANIMATION
+   =========================================== */
+
+*:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.animate-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        padding: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .sidebar-avatar {
+        width: 112px;
+        height: 112px;
+    }
+
+    .main-body {
+        padding: 1rem 1.5rem;
+    }
+
+    .main-content {
+        width: 100%;
+        flex: none;
+    }
+
+    .navbar {
+        display: block;
+        position: relative;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: nowrap;
+        width: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 0.85rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-links li {
+        flex: 0 0 auto;
+    }
+
+    .nav-link {
+        white-space: nowrap;
+    }
+
+    .navbar.can-scroll-left .nav-arrow-left,
+    .navbar.can-scroll-right .nav-arrow-right {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .internship-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .internship-logo-box {
+        width: 100%;
+        flex-basis: auto;
+        justify-content: flex-start;
+    }
+
+    .card-image-link,
+    .card-image {
+        width: 100%;
+        max-width: 100%;
+        flex-basis: auto;
+    }
+
+    .sidebar {
+        padding: 0.75rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .sidebar-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .sidebar-name {
+        font-size: 1.25rem;
+    }
+
+    .sidebar-bio {
+        display: none;
+    }
+
+    .main-body {
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
+    }
+}

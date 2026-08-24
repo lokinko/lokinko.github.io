@@ -1,0 +1,16 @@
+---
+import { getCollection } from "astro:content";
+import BaseDetail from "../../layouts/BaseDetail.astro";
+
+export async function getStaticPaths() {
+    const publications = await getCollection("publications");
+    return publications.map((pub: any) => ({
+        params: { id: pub.id },
+        props: { pub },
+    }));
+}
+
+const { id } = Astro.params;
+---
+
+<BaseDetail collection="publications" id={id} />

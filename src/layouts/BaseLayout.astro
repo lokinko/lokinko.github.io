@@ -1,0 +1,71 @@
+---
+import { SITE } from "../config";
+import LeftSidebar from "../components/layout/LeftSidebar.astro";
+import RightMain from "../components/layout/RightMain.astro";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/inter/800.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "../styles/global.css";
+
+interface Props {
+    title: string;
+    description?: string;
+    ogImage?: string;
+    ogType?: "website" | "article";
+    robots?: "index, follow" | "noindex, nofollow";
+}
+
+const {
+    title,
+    description = SITE.desc,
+    ogImage = SITE.ogImage,
+    ogType = "website",
+    robots = "index, follow",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, SITE.website);
+const pageTitle = `${title} | ${SITE.title}`;
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: SITE.author,
+    url: SITE.website,
+    jobTitle: "Machine Learning Algorithm Engineer",
+    description: SITE.desc,
+};
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="canonical" href={canonicalURL} />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="robots" content={robots} />
+        <meta name="description" content={description} />
+        <meta name="author" content={SITE.author} />
+        <meta property="og:type" content={ogType} />
+        <meta property="og:url" content={Astro.url} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={description} />
+        {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.url)} />}
+        <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        <title>{pageTitle}</title>
+    </head>
+    <body class="bg-background text-foreground min-h-screen">
+        <div class="flex max-lg:flex-col mx-auto max-w-6xl w-full min-h-screen">
+            <LeftSidebar />
+            <RightMain>
+                <slot />
+            </RightMain>
+        </div>
+    </body>
+</html>

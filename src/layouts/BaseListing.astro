@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseItemCard from "../components/ui/BaseItemCard.astro";
+import { getListingItem } from "../utils/adapters";
+
+interface Props {
+    collection: "publications" | "projects";
+    title: string;
+    subtitle?: string;
+}
+
+const { collection, title, subtitle } = Astro.props;
+const entries = await getCollection(collection);
+
+const sortedEntries = entries.sort((a: any, b: any) => {
+    const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
+    const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
+    return dateB - dateA;
+});
+---
+
+<BaseLayout title={title}>
+    {(title || subtitle) && (
+        <header class="page-header">
+            <div class="flex items-center justify-between gap-4">
+                {title && <h1 class="page-title">{title}</h1>}
+                <slot name="actions" />
+            </div>
+            {subtitle && <p class="page-subtitle">{subtitle}</p>}
+        </header>
+    )}
+
+    <section class="item-list">
+        {sortedEntries.map((entry: any) => {
+            const item = getListingItem(entry);
+            return <BaseItemCard {...item} href={`/${collection}/${entry.id}`} />;
+        })}
+    </section>
+
+    <slot />
+</BaseLayout>

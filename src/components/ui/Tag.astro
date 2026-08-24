@@ -1,0 +1,11 @@
+---
+interface Props {
+    name: string;
+    size?: "sm" | "md" | "lg";
+}
+
+const { name, size = "md" } = Astro.props;
+const sizeClasses = { sm: "text-xs", md: "text-sm", lg: "text-base" };
+---
+
+<span class={`tag ${sizeClasses[size]}`}>#{name}</span>
