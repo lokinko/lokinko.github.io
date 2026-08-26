@@ -7,6 +7,10 @@ const FALLBACK_URL = process.env.SCHOLAR_FALLBACK_URL
     || `https://cse.bth.se/~fer/googlescholar-api/googlescholar.php?user=${encodeURIComponent(SCHOLAR_ID)}`;
 const BIO_PATH = fileURLToPath(new URL("../src/content/bio.md", import.meta.url));
 const MARKER = /(<span\s+data-scholar-citations>)([\d,]+)(<\/span>)/;
+const REQUEST_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+};
 
 async function fetchWithTimeout(url, options = {}) {
     return fetch(url, {
@@ -15,12 +19,13 @@ async function fetchWithTimeout(url, options = {}) {
     });
 }
 
-async function fetchFromScholar() {
+function wait(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function fetchFromScholarOnce() {
     const response = await fetchWithTimeout(PROFILE_URL, {
-        headers: {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9",
-        },
+        headers: REQUEST_HEADERS,
     });
 
     if (!response.ok) {
@@ -39,8 +44,29 @@ async function fetchFromScholar() {
     return Number.parseInt(match[1].replaceAll(",", ""), 10);
 }
 
+async function fetchFromScholar() {
+    let lastError;
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
+            return await fetchFromScholarOnce();
+        } catch (error) {
+            lastError = error;
+            if (attempt === 0) {
+                await wait(5_000);
+            }
+        }
+    }
+
+    throw new Error(`Google Scholar request failed: ${lastError.message}`, {
+        cause: lastError,
+    });
+}
+
 async function fetchFromFallback() {
-    const response = await fetchWithTimeout(FALLBACK_URL);
+    const response = await fetchWithTimeout(FALLBACK_URL, {
+        headers: REQUEST_HEADERS,
+    });
     if (!response.ok) {
         throw new Error(`Fallback service returned HTTP ${response.status}`);
     }
@@ -59,9 +85,16 @@ async function getLatestCitations() {
         const citations = await fetchFromScholar();
         return { citations, source: "Google Scholar" };
     } catch (primaryError) {
-        console.warn(`Primary lookup failed: ${primaryError.message}`);
-        const citations = await fetchFromFallback();
-        return { citations, source: "fallback service" };
+        console.warn(`Primary Scholar fetch failed; trying fallback: ${primaryError.message}`);
+        try {
+            const citations = await fetchFromFallback();
+            return { citations, source: "fallback service" };
+        } catch (fallbackError) {
+            throw new Error(
+                `Unable to fetch citations from Google Scholar or fallback: ${fallbackError.message}`,
+                { cause: fallbackError },
+            );
+        }
     }
 }
 
