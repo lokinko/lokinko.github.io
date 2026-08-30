@@ -25,7 +25,7 @@ I am a Machine Learning Algorithm Engineer at OPPO Research Institute. My work c
 
 <h2 id="publications">📚 Publications</h2>
 
-<a class="scholar-metric" href="https://scholar.google.com/citations?user=kzBPdVgAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" aria-label="View Xiangmou Qu's citations on Google Scholar"><span class="scholar-metric-label">Google Scholar</span><strong><span data-scholar-citations>180</span> citations</strong></a>
+<a class="scholar-metric" href="https://scholar.google.com/citations?user=kzBPdVgAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" aria-label="View Xiangmou Qu's citations on Google Scholar"><span class="scholar-metric-label">Google Scholar</span><strong><span data-scholar-citations>181</span> citations</strong></a>
 
 <div class="compact-list">
 
